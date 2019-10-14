@@ -1,0 +1,34 @@
+package fr.epita.factorial.tests;
+
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
+
+import fr.epita.factorial.main.Factorial;
+
+public class FactorialTest {
+	
+	@Test
+	public void testCalculateFactorialOne()
+	{
+        assertEquals(1, Factorial.calculateFactorial(0));
+	}
+
+	@Test
+	public void testNegativeFactorial()
+	{
+		int n = Factorial.calculateFactorial(-1);
+
+	}
+	@Test
+	public void testCalculateFactorial()
+	{
+        assertEquals(1, Factorial.calculateFactorial(0));
+	}
+	@Test
+	public void testCalculateFactorial()
+	{
+        assertEquals(1, Factorial.calculateFactorial(0));
+	}
+
+}

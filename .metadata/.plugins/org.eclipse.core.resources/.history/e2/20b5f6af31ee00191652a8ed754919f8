@@ -1,0 +1,77 @@
+package fr.epita.quiz.services;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import fr.epita.quiz.datamodel.Question;
+
+public abstract class DAO<T> {
+	
+	@Inject
+	SessionFactory sessionFactory;
+	
+	private static Session session = null;
+	protected Class<T> genericClass;
+	
+	public void setClass(Class<T> genericClass)
+	{
+		this.genericClass = genericClass;
+	}
+	
+	protected Session getSession()
+	{
+		try {
+			session = sessionFactory.getCurrentSession();
+		} catch (Exception e)
+		{
+			session = sessionFactory.openSession();
+		}
+		return session;
+	}
+	
+	protected final Transaction getTransaction(Session session) {
+		 
+		 
+        Transaction tx = session.getTransaction();
+        if (!TransactionStatus.ACTIVE.equals(tx.getStatus())) {
+            tx = session.beginTransaction();
+        }
+        return tx;
+    }
+	
+	public void create (T t)
+	{
+		Session session = getSession();
+		Transaction tx = getTransaction(session);
+		session.save(t);
+		tx.commit();
+	}
+	
+	public T getFromSession (int id)
+	{
+		return getSession().get(genericClass, id);
+	}
+	
+	public void delete (T t)
+	{
+		Session session = getSession();
+		Transaction tx = getTransaction(session);
+		session.delete(t);
+		tx.commit();
+	}
+		
+	public abstract void update(T newT, int id);
+	
+	public abstract List<T> search (T criteria);
+	
+
+}

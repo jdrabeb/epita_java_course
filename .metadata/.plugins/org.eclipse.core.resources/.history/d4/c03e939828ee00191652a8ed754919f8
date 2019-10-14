@@ -1,0 +1,102 @@
+package fr.epita.quiz.services;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import fr.epita.quiz.datamodel.Question;
+
+public class DAO<T> {
+	
+	@Inject
+	SessionFactory sessionFactory;
+	
+	private static Session session = null;
+	protected Class<T> genericClass;
+	
+	public void setType(Class<T> genericClass)
+	{
+		this.genericClass = genericClass;
+	}
+	
+	protected Session getSession()
+	{
+		try {
+			session = sessionFactory.getCurrentSession();
+		} catch (Exception e)
+		{
+			session = sessionFactory.openSession();
+		}
+		return session;
+	}
+	
+	protected final Transaction getTransaction(Session session) {
+		 
+		 
+        Transaction tx = session.getTransaction();
+        if (!TransactionStatus.ACTIVE.equals(tx.getStatus())) {
+            tx = session.beginTransaction();
+        }
+        return tx;
+    }
+	
+	public void create (T t)
+	{
+		Session session = getSession();
+		Transaction tx = getTransaction(session);
+		session.save(t);
+		tx.commit();
+	}
+	
+	public void delete (T t)
+	{
+		Session session = getSession();
+		Transaction tx = getTransaction(session);
+		session.delete(t);
+		tx.commit();
+	}
+	
+	
+	public void update(T newT, int id)
+	{
+		Session session = getSession();
+		Transaction tx = getTransaction(session);
+		T question = session.get(genericClass, id);
+		question.setQuestionContent(newQuestion.getQuestionContent());
+		session.update(question);
+		tx.commit();
+	}
+	
+
+//
+//	public void search() {
+//		//given sessionFactory
+//		String questionContent = "How to define a property in a maven pom file?";
+//		
+//		Question question = new Question(questionContent);
+//		Session session = sessionFactory.openSession();
+//		session.save(question);
+//		
+//		//when
+//		org.hibernate.query.Query<Question> query = session.createQuery("from Question q where q.questionContent like :pContent", Question.class);
+//		query.setParameter("pContent", "%maven%");
+//		List<Question> results = query.getResultList();
+//		
+//		//then
+//		List<String> notContainingMaven = new ArrayList<>();
+//		results.stream().forEach(q -> {
+//			if (q.getQuestionContent().contains("maven")){
+//				notContainingMaven.add("");
+//			}
+//		});
+//		}
+
+}

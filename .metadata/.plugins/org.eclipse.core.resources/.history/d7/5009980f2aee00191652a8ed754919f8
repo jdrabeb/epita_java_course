@@ -1,0 +1,26 @@
+package fr.epita.quiz.services;
+
+import java.util.List;
+
+import org.springframework.stereotype.Repository;
+
+import fr.epita.quiz.datamodel.Question;
+
+@Repository
+public class QuestionDAO extends DAO<Question> {
+
+	public QuestionDAO()
+	{
+		this.setClass(Question.class);
+	}
+	
+	public void setContent (Question newContent, Question oldConent)
+	{
+		
+	}
+	
+	public List<Question> search (Question criteria)
+	{
+		
+	}
+}

@@ -1,0 +1,14 @@
+package fr.epita.quiz.tests.di;
+
+import org.junit.Assert;
+
+public class TestDI {
+
+		@Inject
+		String query;
+		
+		public void testFirstIntegration()
+		{
+			Assert.assertNotNull(query);
+		}
+}

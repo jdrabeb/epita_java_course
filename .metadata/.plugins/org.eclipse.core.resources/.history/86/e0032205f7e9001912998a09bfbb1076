@@ -1,0 +1,13 @@
+package fr.epita.quiz.datamodel;
+
+import org.hibernate.Session;
+
+public class QuestionDAO {
+	
+	public void create (Question question)
+	{
+		Session session = sessionFactory.openSession();
+		session.save(question);
+
+	}
+}

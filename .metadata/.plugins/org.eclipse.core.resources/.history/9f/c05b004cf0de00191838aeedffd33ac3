@@ -1,0 +1,37 @@
+package fr.epita.factorial.tests;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+import org.junit.Assert;
+import org.junit.Test;
+
+import fr.epita.factorial.main.Factorial;
+
+public class FactorialTest {
+	
+	@Test
+	public void testCalculateFactorialOne()
+	{
+        assertEquals(1, Factorial.calculateFactorial(0));
+	}
+
+	@Test
+	public void testCalculateFactorialFive()
+	{
+        assertEquals(120, Factorial.calculateFactorial(5));
+	}
+	
+	@Test
+	public void testNegativeFactorial()
+	{
+		Exception e;
+		try {
+			Factorial.calculateFactorial(-1);
+			fail("throw exception when calculating factorial of negative number");
+			}
+		catch(IllegalArgumentException e){
+			Assert.assertNotNull(e);	
+		}
+	}
+}

@@ -1,0 +1,59 @@
+package fr.epita.quiz.services;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.junit.Assert;
+import org.springframework.stereotype.Repository;
+
+import fr.epita.quiz.datamodel.Question;
+
+@Repository
+public class QuestionDAO extends DAO<Question> {
+
+	public QuestionDAO()
+	{
+		this.setClass(Question.class);
+	}
+	
+	@Override
+	public void update (Question newQuestion, int id)
+	{
+		Session session = this.getSession();
+	    Transaction tx = this.getTransaction(session);
+		Question questionToUpdate = session.get(Question.class, id);
+	    questionToUpdate.setQuestionContent(newQuestion.getQuestionContent());
+		session.update(questionToUpdate);
+	    tx.commit();
+	}
+	
+	@Override
+	public List<Question> search (Question criteria)
+	{
+		
+		Session session = this.getSession();
+		
+		String questionContent = "How to define a property in a maven pom file?";
+		
+		Question question = new Question(questionContent);
+		Session session = sessionFactory.openSession();
+		session.save(question);
+		
+		//when
+		org.hibernate.query.Query<Question> query = session.createQuery("from Question q where q.questionContent like :pContent", Question.class);
+		query.setParameter("pContent", "%maven%");
+		List<Question> results = query.getResultList();
+		
+		//then
+		List<String> notContainingMaven = new ArrayList<>();
+		results.stream().forEach(q -> {
+			if (q.getQuestionContent().contains("maven")){
+				notContainingMaven.add("");
+			}
+		});
+		Assert.assertTrue(notContainingMaven.isEmpty());
+
+	}
+}

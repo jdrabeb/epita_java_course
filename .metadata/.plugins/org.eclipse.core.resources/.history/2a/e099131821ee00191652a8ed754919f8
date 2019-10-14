@@ -1,0 +1,85 @@
+package fr.epita.quiz.services;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+
+import fr.epita.quiz.datamodel.Question;
+
+public class DAO<T> {
+	
+	@Inject
+	SessionFactory sessionFactory;
+	
+	private static Session session = null;
+
+	
+	public void create (T t)
+	{
+		Session session = getSession();
+		session.save(t);
+	}
+	
+	public Session getSession()
+	{
+		try {
+			session = sessionFactory.getCurrentSession();
+			System.out.println("try");
+		} catch (Exception e)
+		{
+			System.out.println("catch");
+			session = sessionFactory.openSession();
+		}
+		return session;
+	}
+	
+	
+	
+//	public void update(int questionId, T newQuestion)
+//	{
+//		Session session = getSession();
+//		T question = session.get(Question.class, questionId);
+//		question.setQuestionContent(newQuestion.getQuestionContent());
+//		session.update(question);
+//	}
+//	
+//	public void delete() {
+//		//given sessionFactory
+//		String questionContent = "How to define a property in a maven pom file?";
+//		Question question = new Question(questionContent);
+//		Session session = sessionFactory.openSession();
+//		session.save(question);
+//		
+//		//when
+//		session.delete(question);
+//		//then
+//		Question retrievedQuestion = session.get(Question.class, question.getId());
+//		}
+//
+//	public void search() {
+//		//given sessionFactory
+//		String questionContent = "How to define a property in a maven pom file?";
+//		
+//		Question question = new Question(questionContent);
+//		Session session = sessionFactory.openSession();
+//		session.save(question);
+//		
+//		//when
+//		org.hibernate.query.Query<Question> query = session.createQuery("from Question q where q.questionContent like :pContent", Question.class);
+//		query.setParameter("pContent", "%maven%");
+//		List<Question> results = query.getResultList();
+//		
+//		//then
+//		List<String> notContainingMaven = new ArrayList<>();
+//		results.stream().forEach(q -> {
+//			if (q.getQuestionContent().contains("maven")){
+//				notContainingMaven.add("");
+//			}
+//		});
+//		}
+
+}

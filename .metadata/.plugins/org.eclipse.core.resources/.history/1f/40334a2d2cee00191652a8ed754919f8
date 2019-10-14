@@ -1,0 +1,53 @@
+package fr.epita.quiz.services;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.junit.Assert;
+import org.springframework.stereotype.Repository;
+
+import fr.epita.quiz.datamodel.Question;
+
+@Repository
+public class QuestionDAO extends DAO<Question> {
+
+	public QuestionDAO()
+	{
+		this.setClass(Question.class);
+	}
+	
+	@Override
+	public void update (Question newQuestion, int id)
+	{
+		Session session = this.getSession();
+	    Transaction tx = this.getTransaction(session);
+		Question questionToUpdate = session.get(Question.class, id);
+	    questionToUpdate.setQuestionContent(newQuestion.getQuestionContent());
+		session.update(questionToUpdate);
+	    tx.commit();
+	}
+	
+	@Override
+	public List<Question> search (Question criteria)
+	{
+		
+		Session session = this.getSession();
+	    String searchQuery = "from Question q where q.questionContent like :content";
+		Query<Question> query = session.createQuery(searchQuery, Question.class)
+		query.setParameter("content", criteria.getQuestionContent());
+		return query.list();
+		
+		//then
+		List<String> notContainingMaven = new ArrayList<>();
+		results.stream().forEach(q -> {
+			if (q.getQuestionContent().contains("maven")){
+				notContainingMaven.add("");
+			}
+		});
+		Assert.assertTrue(notContainingMaven.isEmpty());
+
+	}
+}

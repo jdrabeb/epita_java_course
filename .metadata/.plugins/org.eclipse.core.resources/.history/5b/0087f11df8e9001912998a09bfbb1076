@@ -1,0 +1,46 @@
+package fr.epita.quiz.datamodel;
+
+import javax.inject.Inject;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+
+public class QuestionDAO {
+	
+	@Inject
+	SessionFactory sessionFactory;
+	
+	public void create (Question question)
+	{
+		Session session = getSession();
+		session.save(question);
+	}
+	
+	private Session getSession()
+	{
+		Session session = null;
+		try {
+			session = sessionFactory.getCurrentSession();
+		} catch (Exception e)
+		{
+			session = sessionFactory.openSession();
+		}
+		return session;
+	}
+	
+	public void update(int questionId, Question newQuestion)
+	{
+		Question question = 
+		Session session = getSession();
+		session.save(question);
+		
+		//when
+		question.setQuestionContent(questionContentModified);
+		session.update(question);
+		
+		
+		//then
+		Question retrievedQuestion = session.get(Question.class, question.getId());
+	}
+
+}

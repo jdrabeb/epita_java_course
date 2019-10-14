@@ -1,0 +1,36 @@
+package fr.epita.quiz.tests.jpa;
+
+import javax.inject.Inject;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
+
+import fr.epita.quiz.datamodel.Question;
+import fr.epita.quiz.services.DAO;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = "/applicationContext.xml")
+public class TestJPAFromDAO {
+	
+	@Inject
+	DAO<Question> questionDAO;
+	
+	@Test
+	public void testCreate() {
+		
+		Question question = new Question("What is Dependency Injection ?");
+				
+		questionDAO.create(question);
+		
+		Question retrievedQuestion = questionDAO.search(question);
+		System.out.println(retrievedQuestion.getQuestionContent());
+		Assert.assertEquals(question.getQuestionContent(),retrievedQuestion.getQuestionContent());
+
+	}
+}
