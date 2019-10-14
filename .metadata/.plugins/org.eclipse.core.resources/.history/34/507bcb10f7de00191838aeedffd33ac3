@@ -1,7 +1,0 @@
-package fr.epita.quiz.tests.di;
-
-public class TestDI {
-
-		@Inject
-		String query;
-}

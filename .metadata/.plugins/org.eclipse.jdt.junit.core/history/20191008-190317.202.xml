@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun name="TestJPA" project="quiz-core" tests="4" started="4" failures="0" errors="0" ignored="0">
-  <testsuite name="fr.epita.quiz.tests.jpa.TestJPA" time="0.079">
-    <testcase name="testHibernateSession" classname="fr.epita.quiz.tests.jpa.TestJPA" time="0.051"/>
-    <testcase name="testCreate" classname="fr.epita.quiz.tests.jpa.TestJPA" time="0.022"/>
-    <testcase name="testDelete" classname="fr.epita.quiz.tests.jpa.TestJPA" time="0.004"/>
-    <testcase name="testUpdate" classname="fr.epita.quiz.tests.jpa.TestJPA" time="0.002"/>
-  </testsuite>
-</testrun>
