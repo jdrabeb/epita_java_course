@@ -1,83 +1,58 @@
 package fr.epita.quiz.services;
 
-import java.util.ArrayList;
+import java.io.Serializable;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
-import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.resource.transaction.spi.TransactionStatus;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import fr.epita.quiz.datamodel.Question;
-
+@Repository
+@Transactional
 public abstract class DAO<T> {
-	
-	@Inject
-	SessionFactory sessionFactory;
-	
-	private static Session session = null;
-	protected Class<T> genericClass;
-	
-	public void setClass(Class<T> genericClass)
-	{
-		this.genericClass = genericClass;
-	}
-	
-	protected Session getSession()
-	{
-		try {
-			session = sessionFactory.getCurrentSession();
-		} catch (Exception e)
-		{
-			session = sessionFactory.openSession();
-		}
-		return session;
-	}
-	
-	protected final Transaction getTransaction(Session session) {
-		 
-		 
-        Transaction tx = session.getTransaction();
-        if (!TransactionStatus.ACTIVE.equals(tx.getStatus())) {
-            tx = session.beginTransaction();
-        }
-        return tx;
-    }
-	
-	public void create (T t)
-	{
-		Session session = getSession();
-		Transaction tx = getTransaction(session);
-		session.save(t);
-		tx.commit();
-	}
-	
-	public T getById (int id)
-	{
-		return getSession().get(genericClass, id);
-	}
-	
-	public void delete (T t)
-	{
-		Session session = getSession();
-		Transaction tx = getTransaction(session);
-		session.delete(t);
-		tx.commit();
-	}
-		
-	public void update(T newT)
-	{
-		Session session = getSession();
-		Transaction tx = getTransaction(session);
-		session.update(newT);
-		tx.commit();
-	}
-	
-	public abstract List<T> search (T criteria);
-	
 
+	@PersistenceContext
+	EntityManager em;
+	
+	public void create(T t) {
+		em.persist(t);
+		em.close();
+	}
+
+	public T getById(Serializable id, Class<T> clazz) {
+
+		return em.find(clazz, id);
+	}
+
+	public void update(T t) {
+		em.merge(t);
+		em.flush();
+		em.close();
+	}
+
+	public void delete(T t) {
+		em.remove(t);
+		em.close();
+	}
+	
+	public List<T> search(T criteria){
+		
+		Query query = em.createQuery(getQueryString());
+		Map<String, Object> parameters = new LinkedHashMap<String, Object>();
+		fillParametersMap(parameters,criteria);
+		
+		parameters.forEach((k,v) -> query.setParameter(k,v));
+		
+		return query.getResultList();
+	}
+
+	protected abstract String getQueryString();
+	protected abstract void fillParametersMap(Map<String,Object> map, T t);
+	
+	
 }

@@ -1,27 +1,25 @@
 package fr.epita.quiz.services;
 
-import java.util.List;
+import java.util.Map;
 
-import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import fr.epita.quiz.datamodel.Question;
 
 @Repository
-public class QuestionDAO extends DAO<Question> {
+@Transactional
+public class QuestionDAO extends DAO<Question>{
 
-	public QuestionDAO()
-	{
-		this.setClass(Question.class);
-	}
-	
 	@Override
-	public List<Question> search (Question criteria)
-	{
-		
-		Session session = this.getSession();
-	    String searchQuery = "from Question q where q.questionContent like :content";
-		org.hibernate.query.Query<Question> query = session.createQuery(searchQuery, Question.class);
-		query.setParameter("content", criteria.getQuestionContent());
-		return query.list();
+	protected String getQueryString() {
+		return "from Question q where q.questionContent like :pContent";
 	}
+
+	@Override
+	protected void fillParametersMap(Map<String,Object> map, Question question) {
+		map.put("pContent", question.getQuestionContent());
+	}
+
 }
